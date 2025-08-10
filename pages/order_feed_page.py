@@ -1,41 +1,34 @@
-from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from locators import OrderFeedLocators
 import allure
 
 class OrderFeedPage(BasePage):
-    @allure.step('Перейти в "Ленту заказов"')
+    @allure.step('Перейти в Ленту заказов')
     def go_to_order_feed(self):
         self.click_element(OrderFeedLocators.BUTTON_ORDER_FEED)
 
-    @allure.step('Дождаться загрузки заглавного текста в "Ленте заказов"')
-    def is_order_feed_visible(self):
-        return self.find_element_webdriverwait(OrderFeedLocators.TEXT_ORDER_FEED)
-
-    @allure.step('Клик на первый заказ в списке "Ленты заказов"')
+    @allure.step('Клик по первому заказу в ленте')
     def click_to_first_order_from_order_feed(self):
-        self.click_element(OrderFeedLocators.ORDER_FROM_ORDER_FEED)
+        self.click_element(OrderFeedLocators.FIRST_ORDER)
 
-    @allure.step('Дождаться загрузки текста в окне "Детали заказа"')
+    @allure.step('Проверка появления окна с деталями заказа')
     def is_window_with_order_details_visible(self):
-        return self.find_element_webdriverwait(OrderFeedLocators.TEXT_COMPOSITION_ORDER)
+        return self.find_element_webdriverwait(OrderFeedLocators.ORDER_DETAILS_WINDOW)
 
-    @staticmethod
-    @allure.step('Динамический локатор заказа по его id в Ленте заказов')
-    def order_by_id(order_id):
-        return By.XPATH, OrderFeedLocators.ORDER_ID.format(order_id=order_id)
+    @allure.step('Найти заказ по ID')
+    def order_by_id(self, order_id):
+        locator = OrderFeedLocators.ORDER_BY_ID_TEMPLATE.format(order_id=order_id)
+        return self.find_element_webdriverwait((OrderFeedLocators.ORDER_BY_ID_BY, locator))
 
-    @allure.step('Получить значение счетчика "Выполнено за все время"')
+    @allure.step('Получить значение счетчика "Выполнено за всё время"')
     def get_text_from_counter_completed_for_all_time(self):
-        return self.get_text_from_element(OrderFeedLocators.TEXT_COUNTER_COMPLETED_FOR_ALL_TIME)
+        return int(self.get_text_from_element(OrderFeedLocators.COUNTER_COMPLETED_ALL_TIME))
 
     @allure.step('Получить значение счетчика "Выполнено за сегодня"')
     def get_text_from_counter_completed_for_today(self):
-        return self.get_text_from_element(OrderFeedLocators.TEXT_COUNTER_COMPLETED_FOR_TODAY)
+        return int(self.get_text_from_element(OrderFeedLocators.COUNTER_COMPLETED_TODAY))
 
-    @allure.step('Дождаться изменения текста в разделе "В работе"')
+    @allure.step('Ожидание появления заказа в разделе "В работе"')
     def wait_for_text_in_work_to_change(self):
-        while True:
-            new_value = self.get_text_from_element(OrderFeedLocators.TEXT_LIST_ON_WORK)
-            if new_value and new_value != "Все текущие заказы готовы!":
-                return new_value
+        old_text = self.get_text_from_element(OrderFeedLocators.ORDER_IN_WORK)
+        return self.wait_for_text_to_change(OrderFeedLocators.ORDER_IN_WORK, old_text)

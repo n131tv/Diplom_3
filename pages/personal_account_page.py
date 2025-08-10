@@ -1,35 +1,26 @@
 from pages.base_page import BasePage
 from locators import PersonalAccountLocators
-from data import Url, UserData
 import allure
 
-
 class PersonalAccountPage(BasePage):
-    @allure.step('Перейти в личный кабинет')
+    @allure.step('Авторизация пользователя')
+    def authorization(self):
+        self.input_text(PersonalAccountLocators.INPUT_EMAIL, "test@example.com")
+        self.input_text(PersonalAccountLocators.INPUT_PASSWORD, "password123")
+        self.click_element(PersonalAccountLocators.BUTTON_LOGIN)
+
+    @allure.step('Переход в Личный кабинет')
     def go_to_personal_account(self):
         self.click_element(PersonalAccountLocators.BUTTON_PERSONAL_ACCOUNT)
 
-    @allure.step('Авторизация')
-    def authorization(self):
-        self.add_text_to_element(PersonalAccountLocators.FIELD_EMAIL, UserData.email)
-        self.add_text_to_element(PersonalAccountLocators.FIELD_PASSWORD, UserData.password)
-        self.click_element(PersonalAccountLocators.BUTTON_LOG_IN)
-        self.url_to_be(Url.URL_HOME)
-
-    @allure.step('Перейти в историю заказов')
-    def go_to_order_history(self):
-        self.click_element(PersonalAccountLocators.BUTTON_HISTORY_ORDERS)
-
-    @allure.step('Получить номер последнего заказа в Истории заказов')
-    def get_order_id_from_order_history(self):
-        self.scroll_to_element(PersonalAccountLocators.LAST_ORDER_FROM_ORDER_HISTORY)
-        return self.get_text_from_element(PersonalAccountLocators.LAST_ORDER_FROM_ORDER_HISTORY)
-
-    @allure.step('Выйти из личного кабинета')
-    def log_out(self):
-        self.click_element(PersonalAccountLocators.BUTTON_LOGOUT)
-        self.wait_for_url_change(Url.URL_ACCOUNT_PROFILE)
-
-    @allure.step('Дождаться загрузки кнопки Профиль')
+    @allure.step('Проверка отображения кнопки Профиль')
     def is_profile_visible(self):
         return self.find_element_webdriverwait(PersonalAccountLocators.BUTTON_PROFILE)
+
+    @allure.step('Переход в раздел История заказов')
+    def go_to_order_history(self):
+        self.click_element(PersonalAccountLocators.BUTTON_ORDER_HISTORY)
+
+    @allure.step('Выход из аккаунта')
+    def log_out(self):
+        self.click_element(PersonalAccountLocators.BUTTON_LOGOUT)

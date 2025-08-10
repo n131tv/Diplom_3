@@ -4,6 +4,7 @@ from data import Url
 from pages.personal_account_page import PersonalAccountPage
 from pages.constructor_page import ConstructorPage
 from pages.order_feed_page import OrderFeedPage
+from helpers.constructor_helpers import add_ingredients_to_constructor
 
 class TestMainFunctionality:
     @allure.title('Проверка перехода на Конструктор из формы авторизации')
@@ -90,8 +91,7 @@ class TestMainFunctionality:
         personal_account = PersonalAccountPage(driver)
         personal_account.authorization()
         constructor = ConstructorPage(driver)
-        for index in ingredients:
-            constructor.drag_and_drop_ingredient_by_counter(index)
+        add_ingredients_to_constructor(constructor, ingredients)
         constructor.click_button_place_order()
         text = constructor.is_window_order_id_visible().text
         assert text == 'идентификатор заказа'

@@ -12,5 +12,5 @@ class Url:
     URL_ORDER_FEED = f"{BASE_URL}/feed"  # Лента заказов
 
 class UserData:
-    email = 'nikita_novikov_24@yandex.ru'
-    password = 'n131500n'
+    email = 'testgureva@ya.ru'
+    password = '123456'

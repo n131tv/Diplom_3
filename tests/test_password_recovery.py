@@ -2,7 +2,6 @@ from pages.password_recovery_page import PasswordRecoveryPage
 from data import Url
 import allure
 
-
 class TestPasswordRecovery:
     @allure.title('Проверка перехода на страницу восстановления пароля по кнопке Восстановить пароль')
     def test_check_transition_to_page_recovery_password(self, driver):

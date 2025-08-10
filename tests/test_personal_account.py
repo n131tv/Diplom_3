@@ -2,7 +2,6 @@ from pages.personal_account_page import PersonalAccountPage
 from data import Url
 import allure
 
-
 class TestPersonalAccount:
     @allure.title('Проверка авторизации и перехода по клику на Личный кабинет')
     def test_check_transition_to_page_personal_account(self, driver):
@@ -10,8 +9,8 @@ class TestPersonalAccount:
         page = PersonalAccountPage(driver)
         page.authorization()
         page.go_to_personal_account()
-        button = page.is_profile_visible()
-        assert button.text == 'Профиль'
+        button_text = page.get_text_from_element(page.is_profile_visible().locator)
+        assert button_text == 'Профиль'
 
     @allure.title('Проверка авторизации и перехода в раздел История заказов')
     def test_check_transition_to_page_order_history(self, driver):
