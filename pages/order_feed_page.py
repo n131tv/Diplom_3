@@ -1,34 +1,55 @@
-from pages.base_page import BasePage
-from locators import OrderFeedLocators
+from selenium.webdriver.common.by import By
+from .base_page import BasePage
+from data import Url
 import allure
 
+
 class OrderFeedPage(BasePage):
-    @allure.step('Перейти в Ленту заказов')
-    def go_to_order_feed(self):
-        self.click_element(OrderFeedLocators.BUTTON_ORDER_FEED)
+    # Локаторы элементов
+    ORDER_DETAILS_MODAL = (By.XPATH, "//div[contains(@class, 'Modal_modal')]")
+    ALL_TIME_ORDERS_COUNT = (By.XPATH, "//p[contains(text(), 'Выполнено за все время')]/following-sibling::p")
+    FIRST_ORDER_LINK = (By.XPATH, "(//div[contains(@class, 'OrderHistory_link')])[1]")
+    IN_PROGRESS_SECTION = (By.XPATH, "//section[contains(@class, 'OrderFeed_inProgress')]")
 
-    @allure.step('Клик по первому заказу в ленте')
-    def click_to_first_order_from_order_feed(self):
-        self.click_element(OrderFeedLocators.FIRST_ORDER)
+    @allure.step('Открыть страницу ленты заказов')
+    def open_order_feed(self):
+        """
+        Открывает страницу ленты заказов
+        :return: self для поддержки fluent-интерфейса
+        """
+        self.open(Url.URL_ORDER_FEED)
+        return self
 
-    @allure.step('Проверка появления окна с деталями заказа')
-    def is_window_with_order_details_visible(self):
-        return self.find_element_webdriverwait(OrderFeedLocators.ORDER_DETAILS_WINDOW)
+    @allure.step('Кликнуть на первый заказ в ленте')
+    def click_first_order(self):
+        """
+        Кликает на первый заказ в ленте
+        :return: self
+        """
+        self.click(self.FIRST_ORDER_LINK)
+        return self
 
-    @allure.step('Найти заказ по ID')
-    def order_by_id(self, order_id):
-        locator = OrderFeedLocators.ORDER_BY_ID_TEMPLATE.format(order_id=order_id)
-        return self.find_element_webdriverwait((OrderFeedLocators.ORDER_BY_ID_BY, locator))
+    @allure.step('Проверить видимость деталей заказа')
+    def is_order_details_visible(self):
+        """
+        Проверяет видимость модального окна с деталями заказа
+        :return: bool
+        """
+        return self.is_element_visible(self.ORDER_DETAILS_MODAL)
 
-    @allure.step('Получить значение счетчика "Выполнено за всё время"')
-    def get_text_from_counter_completed_for_all_time(self):
-        return int(self.get_text_from_element(OrderFeedLocators.COUNTER_COMPLETED_ALL_TIME))
+    @allure.step('Получить количество заказов за все время')
+    def get_all_time_orders_count(self):
+        """
+        Получает количество выполненных заказов за все время
+        :return: int
+        """
+        count_text = self.get_text(self.ALL_TIME_ORDERS_COUNT)
+        return int(count_text) if count_text.isdigit() else 0
 
-    @allure.step('Получить значение счетчика "Выполнено за сегодня"')
-    def get_text_from_counter_completed_for_today(self):
-        return int(self.get_text_from_element(OrderFeedLocators.COUNTER_COMPLETED_TODAY))
-
-    @allure.step('Ожидание появления заказа в разделе "В работе"')
-    def wait_for_text_in_work_to_change(self):
-        old_text = self.get_text_from_element(OrderFeedLocators.ORDER_IN_WORK)
-        return self.wait_for_text_to_change(OrderFeedLocators.ORDER_IN_WORK, old_text)
+    @allure.step('Проверить видимость раздела "В работе"')
+    def is_in_progress_section_visible(self):
+        """
+        Проверяет видимость раздела "В работе"
+        :return: bool
+        """
+        return self.is_element_visible(self.IN_PROGRESS_SECTION)

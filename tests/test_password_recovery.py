@@ -3,23 +3,23 @@ from data import Url
 import allure
 
 class TestPasswordRecovery:
-    @allure.title('Проверка перехода на страницу восстановления пароля по кнопке Восстановить пароль')
+    @allure.title('Проверка перехода на страницу восстановления пароля')
     def test_check_transition_to_page_recovery_password(self, driver):
-        driver.get(Url.URL_ENTRANCE_PERSONAL_ACCOUNT)
         page = PasswordRecoveryPage(driver)
-        new_url = page.check_transition_to_page_recovery_password()
-        assert new_url == Url.URL_RECOVERY_PASSWORD_PAGE
+        page.open_login_page()
+        page.go_to_password_recovery()
+        assert page.is_password_recovery_page()
 
-    @allure.title('Проверка ввода почты и клик по кнопке Восстановить')
-    def test_check_input_email_and_click_button_recovery(self, driver):
-        driver.get(Url.URL_RECOVERY_PASSWORD_PAGE)
+    @allure.title('Проверка восстановления пароля')
+    def test_check_password_recovery_flow(self, driver):
         page = PasswordRecoveryPage(driver)
-        new_url = page.check_input_email_and_click_button_recovery()
-        assert new_url == Url.URL_RECOVERY_PASSWORD_FORM
+        page.open_password_recovery_page()
+        page.enter_email_and_submit()
+        assert page.is_password_reset_form_displayed()
 
-    @allure.title('Проверка активности поля при клике на иконку показать/скрыть пароль')
-    def test_click_button_to_show_password(self, driver):
-        driver.get(Url.URL_RECOVERY_PASSWORD_PAGE)
+    @allure.title('Проверка показа/скрытия пароля')
+    def test_check_password_visibility_toggle(self, driver):
         page = PasswordRecoveryPage(driver)
-        element = page.click_button_to_show_password()
-        assert element is not None
+        page.open_password_recovery_page()
+        page.toggle_password_visibility()
+        assert page.is_password_visible()

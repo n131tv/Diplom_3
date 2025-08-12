@@ -16,6 +16,7 @@ class ConstructorPage(BasePage):
         return self.find_element_webdriverwait(ConstructorLocators.TEXT_COLLECT_BURGER)
 
     @staticmethod
+    @allure.step('Получить локатор ингредиента по индексу: {index}')
     def burger_ingredient_by_index(index):
         return By.XPATH, ConstructorLocators.BURGER_INGREDIENT.format(index=index)
 
@@ -79,6 +80,7 @@ class ConstructorPage(BasePage):
         self.click_element(ConstructorLocators.BUTTON_CLOSE_ORDER_ID)
 
     @staticmethod
+    @allure.step('Получить локатор счетчика ингредиента по индексу: {index}')
     def get_ingredient_by_counter(index):
         return By.XPATH, ConstructorLocators.INGREDIENT_COUNTER.format(index=index)
 
